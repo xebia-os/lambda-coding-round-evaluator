@@ -25,6 +25,10 @@ In my current organization, one of the interview rounds is a coding round. Candi
    2. If build succeeds, then we find the test code coverage and if it is less than a threshold then we mark candidate status to failed and recruitment team is notified.
 5. If build succeeds and code coverage is above a threshold, then we run static analysis on the code to calculate the code quality score. If code quality score is below a threshold then candidate is marked failed and notification is sent to the recruitment team. Else, candidate passes the round and a human interviewer will now evaluate candidate assignment.
 
+![](images/coding-round-evaluator.png)
+
+
+
 ## Services
 
 This project is composed four services:
