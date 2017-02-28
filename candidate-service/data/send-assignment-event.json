@@ -1,0 +1,49 @@
+{
+    "Records": [
+        {
+            "eventID": "6f56873432cc11327bb3d34b89fccc56",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-east-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1486806180,
+                "Keys": {
+                    "id": {
+                        "S": "9411ec60-f03e-11e6-ad71-f74b3a0b7acd"
+                    }
+                },
+                "NewImage": {
+                    "name": {
+                        "S": "Shekhar Gulati"
+                    },
+                    "evaluated": {
+                        "BOOL": false
+                    },
+                    "id": {
+                        "S": "9411ec60-f03e-11e6-ad71-f74b3a0b7acd"
+                    },
+                    "experience": {
+                        "N": "2"
+                    },
+                    "submittedAt": {
+                        "N": "1486806224422"
+                    },
+                    "email": {
+                        "S": "shekhargulati84@gmail.com"
+                    },
+                    "status": {
+                        "S": "Candidate Submitted"
+                    },
+                    "updatedAt": {
+                        "N": "1486806224422"
+                    }
+                },
+                "SequenceNumber": "83000000000019946091137",
+                "SizeBytes": 207,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-east-1:167443307349:table/candidate-dev/stream/2017-02-11T09:22:26.753"
+        }
+    ]
+}

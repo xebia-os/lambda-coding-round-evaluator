@@ -1,0 +1,60 @@
+service: assignment-build-executor-service
+
+provider:
+  name: aws
+  runtime: java8
+  stage: dev
+  region: us-east-1
+  environment:
+    LCRE_CANDIDATE_SUBMISSIONS_S3_BUCKET: "${self:custom.s3BucketPrefix}-candidate-submissions-${self:provider.stage}"
+    LCRE_CANDIDATE_BUILD_REPORTS_S3_BUCKET: "${self:custom.s3BucketPrefix}-candidate-build-reports-${self:provider.stage}"
+    CANDIDATE_TABLE: candidate-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - "s3:*"
+        Resource: "*"
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource: "*"
+
+custom:
+  s3BucketPrefix: lcre
+
+package:
+  artifact: build/distributions/assignment-build-executor-service.zip
+
+functions:
+  assignment-build-executor:
+    handler: xebia.lcre.BuildHandler
+    memorySize: 704
+    timeout: 300
+    events:
+      - s3:
+          bucket: ${self:provider.environment.LCRE_CANDIDATE_SUBMISSIONS_S3_BUCKET}
+          event: s3:ObjectCreated:*
+          
+resources:
+  Resources:
+    S3BucketForBuildReports:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.LCRE_CANDIDATE_BUILD_REPORTS_S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"
+

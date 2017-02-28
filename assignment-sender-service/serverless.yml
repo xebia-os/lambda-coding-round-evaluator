@@ -1,0 +1,40 @@
+service: assignment-sender-service
+
+provider:
+  name: aws
+  runtime: java8
+  region: us-east-1
+  stage: dev
+  environment:
+    LCRE_CANDIDATE_SUBMISSIONS_S3_BUCKET: "${self:custom.s3BucketPrefix}-candidate-submissions-${self:provider.stage}"
+    CANDIDATE_TABLE: candidate-${opt:stage, self:provider.stage}
+    LCRE_ASSIGNMENTS_BUCKET: "${self:custom.s3BucketPrefix}-assignments-${self:provider.stage}"
+    SOURCE_EMAIL: ${self:custom.sourceEmai}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "dynamodb:*"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - "ses:SendEmail"
+      Resource: "*"
+
+custom:
+  awsAccountNumber: ${file(./env.yml):awsAccountNumber}
+  candidateTableStreamTimestamp: ${file(./env.yml):candidateTableStreamTimestamp}
+  s3BucketPrefix: lcre
+  sourceEmail: ${file(./env.yml):sourceEmail}
+
+package:
+  artifact: target/scala-2.11/assignment-sender-service.jar
+
+functions:
+  sendAssignment:
+    handler: assignmentsender.Handler
+    events:
+      - stream: arn:aws:dynamodb:${self:provider.region}:${self:custom.awsAccountNumber}:table/${self:provider.environment.CANDIDATE_TABLE}/stream/${self:custom.candidateTableStreamTimestamp}

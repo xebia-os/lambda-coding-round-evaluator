@@ -1,0 +1,46 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile (
+        'com.amazonaws:aws-lambda-java-core:1.1.0',
+        'com.amazonaws:aws-lambda-java-log4j:1.0.0',
+        'com.fasterxml.jackson.core:jackson-core:2.8.5',
+        'com.fasterxml.jackson.core:jackson-databind:2.8.5',
+        'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
+    )
+    compile('com.amazonaws:aws-lambda-java-events:1.3.0'){
+        exclude module: 'aws-java-sdk-kinesis'
+        exclude module: 'aws-java-sdk-kms'
+        exclude module: 'aws-java-sdk-sqs'
+        exclude module: 'aws-java-sdk-cognitoidentity'
+        exclude module: 'aws-java-sdk-sns'
+    }
+
+    compile "commons-io:commons-io:2.5"
+    compile('org.zeroturnaround:zt-zip:1.11')
+    testCompile "junit:junit:4.12"
+    testCompile 'org.assertj:assertj-core:3.6.2'
+    testCompile 'org.mockito:mockito-core:2.7.6'
+}
+
+task buildZip(type: Zip) {
+    baseName = "assignment-build-executor-service"
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.runtime
+    }
+}
+
+build.dependsOn buildZip
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+}

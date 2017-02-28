@@ -1,0 +1,82 @@
+service: candidate-service
+
+frameworkVersion: ">=1.1.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  environment:
+    CANDIDATE_TABLE: candidate-${opt:stage, self:provider.stage}
+    CANDIDATE_EMAIL_TABLE: "candidate-email-${opt:stage, self:provider.stage}"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/candidate-*"
+
+functions:
+  candidateSubmission:
+    handler: api/candidate.submit
+    memorySize: 128
+    description: Submit candidate information and starts interview process.
+    events:
+      - http: 
+          path: candidates
+          method: post
+          cors: true
+  listCandidates:
+    handler: api/candidate.list
+    memorySize: 128
+    description: List all candidates
+    events:
+      - http: 
+          path: candidates
+          method: get
+          cors: true     
+  candidateDetails:
+    handler: api/candidate.get
+    events:
+      - http:
+          path: candidates/{id}
+          method: get
+          cors: true             
+
+resources:
+  Resources:
+    CandidatesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"   
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        StreamSpecification:
+          StreamViewType: "NEW_IMAGE"
+        TableName: ${self:provider.environment.CANDIDATE_TABLE}
+    CandidateEmailDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "email"
+            AttributeType: "S"
+        KeySchema:
+          -
+            AttributeName: "email"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:provider.environment.CANDIDATE_EMAIL_TABLE}
