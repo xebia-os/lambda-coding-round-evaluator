@@ -37,7 +37,7 @@ public class BuildPackageCreator {
     }
 
     private String extractCandidateId(Path zipPath) {
-        return zipPath.getFileName().toString().split("-")[1].replace(".zip", "");
+        return zipPath.getFileName().toString().replace("assignment-", "");
     }
 
 }

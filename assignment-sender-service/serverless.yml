@@ -9,7 +9,7 @@ provider:
     LCRE_CANDIDATE_SUBMISSIONS_S3_BUCKET: "${self:custom.s3BucketPrefix}-candidate-submissions-${self:provider.stage}"
     CANDIDATE_TABLE: candidate-${opt:stage, self:provider.stage}
     LCRE_ASSIGNMENTS_BUCKET: "${self:custom.s3BucketPrefix}-assignments-${self:provider.stage}"
-    SOURCE_EMAIL: ${self:custom.sourceEmai}
+    SOURCE_EMAIL: ${self:custom.sourceEmail}
   iamRoleStatements:
     - Effect: "Allow"
       Resource: "*"
