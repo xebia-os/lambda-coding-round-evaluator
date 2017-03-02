@@ -41,10 +41,3 @@ This project is composed four services:
 ## License
 
 Apache. 
-
-
-
-## Contact Me
-
-You can follow me on twitter at [https://twitter.com/shekhargulati](https://twitter.com/shekhargulati) or email me at <shekhargulati84@gmail.com>. Also, you can read my blogs at [http://shekhargulati.com/](http://shekhargulati.com/).
-
