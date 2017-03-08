@@ -35,6 +35,6 @@ package:
 
 functions:
   sendAssignment:
-    handler: assignmentsender.Handler
+    handler: assignmentsender.AssignmentSenderHandler
     events:
       - stream: arn:aws:dynamodb:${self:provider.region}:${self:custom.awsAccountNumber}:table/${self:provider.environment.CANDIDATE_TABLE}/stream/${self:custom.candidateTableStreamTimestamp}
